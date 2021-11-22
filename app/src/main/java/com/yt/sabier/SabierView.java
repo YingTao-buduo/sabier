@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -74,15 +75,16 @@ public class SabierView extends View {
     }
 
     protected void onSizeChanged(int w, int h, int oldWith, int oldHeight) {
-        bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        width = w;
+        height = h;
+//        bitmap = getTransparentBitmap();
+        bitmap = Bitmap.createBitmap(w,h, Bitmap.Config.ARGB_8888);
 
         canvas = new Canvas();
         canvas.setBitmap(bitmap);
         if (bitmap != null)
             canvas.drawBitmap(bitmap, 0, 0, null);
 
-        width = w;
-        height = h;
 
         paint = new Paint();
         paint.setAntiAlias(true);
@@ -129,9 +131,32 @@ public class SabierView extends View {
 
     public void clearAnnotation() {
         if (canvas != null) {
-            canvas.drawColor(Color.WHITE);
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
             invalidate();
         }
+    }
+
+    private Bitmap getTransparentBitmap() {
+        Bitmap bitmap1 = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);;
+        if (bitmap1 != null) {
+            int mWidth = bitmap1.getWidth();
+            int mHeight = bitmap1.getHeight();
+            for (int i = 0; i < mHeight; i++) {
+                for (int j = 0; j < mWidth; j++) {
+                    int color = bitmap1.getPixel(j, i);
+                    int g = Color.green(color);
+                    int r = Color.red(color);
+                    int b = Color.blue(color);
+                    int a = Color.alpha(color);
+                    if (g >= 250 && r >= 250 && b >= 250) {
+                        a = 0;
+                    }
+                    color = Color.argb(a, r, g, b);
+                    bitmap1.setPixel(j, i, color);
+                }
+            }
+        }
+        return bitmap1;
     }
 
     public Bitmap getBitmap() {
