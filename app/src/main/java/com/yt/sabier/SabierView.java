@@ -59,9 +59,9 @@ public class SabierView extends View {
         strokes.add(currentStroke);
         int maxSize = 50;
         if (strokes.size() > maxSize) {
-            strokes.remove(strokes.size()-maxSize);
+            strokes.remove(strokes.size() - maxSize);
             clearAnnotation();
-            for (int i = strokes.size()-maxSize + 1; i < strokes.size(); i++) {
+            for (int i = strokes.size() - maxSize + 1; i < strokes.size(); i++) {
                 currentStroke = strokes.get(i);
                 for (int j = 0; j < currentStroke.size(); j++)
                     this.drawSection(j);
